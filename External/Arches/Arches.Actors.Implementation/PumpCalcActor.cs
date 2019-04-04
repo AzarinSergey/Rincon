@@ -47,10 +47,11 @@ namespace Arches.Actors.Implementation
                 _logger.LogError(e, "Handler exception.");
                 await handler.ErrorCallback(command, _httpClientFactory.CreateClient());
             }
-
-            _logger.LogInformation($"[END] [{Self.Path}].Handled Command at {DateTime.Now}, total seconds - {sw.Elapsed.TotalSeconds}");
-
-            Context.Stop(_self);
+            finally
+            {
+                _logger.LogInformation($"[END] [{Self.Path}].Handled Command at {DateTime.Now}, total seconds - {sw.Elapsed.TotalSeconds}");
+                Context.Stop(_self);
+            }
         }
     }
 }

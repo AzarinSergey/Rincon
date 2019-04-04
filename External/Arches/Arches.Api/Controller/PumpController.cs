@@ -45,6 +45,8 @@ namespace Arches.Api.Controller
         ///
         ///     POST /calc
         ///     {
+        ///        "SuccessCallbackUrl": "http://localhost:5000/v1/pump/ping",
+        ///        "ErrorCallbackUrl": "http://localhost:5000/v1/pump/ping",
         ///        "CalculationUuid": "34A81E47-7935-4951-A452-380036BBB4BE",
         ///        "VxDataUrl": "http://localhost:24001/",
         ///        "EcnDataUrl": "http://localhost:24001/",
