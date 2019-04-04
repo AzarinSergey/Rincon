@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  arches.api:
+    image: ${DOCKER_REGISTRY-}archesapi
+    build:
+      context: .
+      dockerfile: Arches.Api/Dockerfile
