@@ -9,7 +9,7 @@ docker pull minio/minio
 docker run -p 24001:9000 --name minioServer -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" -v E:\dataVolumes\minio:/data -v E:\dataVolumes\minio\config:/root/.minio minio/minio server /data 
 
 4. запускаемых проекта 2: 
-- Arches.Api (внешний сервис - акторы(на каждый вызов) для проведения расчетов)
+- Arches.Api (внешний сервис - акторы(на каждый вызов) для проведения расчетов. Нельзя запустить расчет с CalculationUuid рассчет по которому не завершен)
 - Bismarck (бизнесовое приложение на микросервисах под управлением оркестратора ServiceFabric)
 
 
