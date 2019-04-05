@@ -12,4 +12,17 @@ docker run -p 24001:9000 --name minioServer -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EX
 - Arches.Api (внешний сервис - акторы(на каждый вызов) для проведения расчетов. Нельзя запустить расчет с CalculationUuid рассчет по которому не завершен)
 - Bismarck (бизнесовое приложение на микросервисах под управлением оркестратора ServiceFabric)
 
+5. Для автономного запуска расчетов Pump (без участия бизнес приложения) 
+- во внешнем сервисе в корне хранилища нужно создать папку "pump"
+- в папку "pump" пометсить 2 файла с данными для рассчета:  ecn_vr{CalculationUuid}.csv и vx{CalculationUuid}.csv
+- запустить проект Arches.Api 
+- перейти по урлу http://localhost:5000/swagger
+- выполнить запрос "Calc" со значением в параметре CalculationUuid соответствующим именам файлов в хранилище 
+(ecn_vr{CalculationUuid}.csv и vx{CalculationUuid}.csv)
+- результат рассчетов будет отправлен на указанные в параметрах запроса урлы, в зависимости от успешности
+  "ErrorCallbackUrl": "http://localhost:5000/v1/pump/ping",
+  "SuccessCallbackUrl": "http://localhost:5000/v1/pump/ping"
 
+6. Если процесс консольного приложения рассчетов повиснет (это возникает когда консолине не удается выполнить код файлов .py)
+ - убить процесс PyHyCarSim.exe диспетчером (это завершит работу актора)
+ - очистить директорию по названию CalculationUuid от временных файлов Rincon/External/Arches/Arches.Api/ServiceStaticFiles/PumpService/{CalculationUuid}.
