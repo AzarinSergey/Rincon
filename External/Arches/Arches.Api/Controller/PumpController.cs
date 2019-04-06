@@ -57,7 +57,7 @@ namespace Arches.Api.Controller
         ///
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Task in progress</response>
+        /// <response code="202">Task in progress</response>
         /// <response code="400">Actor instantiation error</response>
         [HttpPost("pump/calc")]
         [ProducesResponseType(202)]

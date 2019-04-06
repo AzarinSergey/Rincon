@@ -29,6 +29,8 @@ namespace Arches.Actors.Domain
         private const string ExeFileName = "PyHyCarSim.exe";
 
         private readonly ILogger _logger;
+        private string _calcDirectoryPath;
+        private Process _cmd;
 
         public PumpCalcCommandHandler(ILogger logger)
         {
@@ -68,11 +70,11 @@ namespace Arches.Actors.Domain
             var runtimeDirectory = Directory.GetCurrentDirectory();
             var copyFrom = Path.Combine(runtimeDirectory, CalcTemplateCmdFilesPath);
             var copyTo = Path.Combine(runtimeDirectory, CalcArtifactsPath, calcUuid);
-            var calcDirectoryPath = CopyFilesToNewDirectory(copyFrom, copyTo);
+            _calcDirectoryPath = CopyFilesToNewDirectory(copyFrom, copyTo);
 
-            var inputPyFilePath = Path.Combine(calcDirectoryPath, InputPyTemplateFileName);
-            var VxFilePath = Path.Combine(calcDirectoryPath, PumpConsts.VxFilePrefix) + PumpConsts.DataFileExtension;
-            var EcnFilePath = Path.Combine(calcDirectoryPath, PumpConsts.EcnFilePrefix) + PumpConsts.DataFileExtension;
+            var inputPyFilePath = Path.Combine(_calcDirectoryPath, InputPyTemplateFileName);
+            var VxFilePath = Path.Combine(_calcDirectoryPath, PumpConsts.VxFilePrefix) + PumpConsts.DataFileExtension;
+            var EcnFilePath = Path.Combine(_calcDirectoryPath, PumpConsts.EcnFilePrefix) + PumpConsts.DataFileExtension;
 
             var inputPy = Render.StringToString(
                     File.ReadAllText(Path.Combine(copyFrom, InputPyTemplateFileName), Encoding.UTF8),
@@ -102,18 +104,17 @@ namespace Arches.Actors.Domain
                 await vxFs.WriteAsync(Encoding.UTF8.GetBytes(vxString), cancelToken);
             }
 
-            RunCmd(calcDirectoryPath);
+            RunCmd(_calcDirectoryPath);
 
             var outputFileName = PumpConsts.OutputFilePrefix + calcUuid + PumpConsts.OutputFileExtension;
 
-            var bs = File.ReadAllBytes(Path.Combine(calcDirectoryPath, PumpConsts.OutputFilePrefix) + PumpConsts.OutputFileExtension);
+            var bs = File.ReadAllBytes(Path.Combine(_calcDirectoryPath, PumpConsts.OutputFilePrefix) + PumpConsts.OutputFileExtension);
             using (var filestream = new MemoryStream(bs))
             {
                 await minioClient.PutObjectAsync(PumpConsts.MinioBucketName, outputFileName, filestream, filestream.Length, cancellationToken: cancelToken);
             }
-            
 
-            Directory.Delete(calcDirectoryPath, true);
+            Directory.Delete(_calcDirectoryPath, true);
         }
 
         private async Task<(string, string)> GetInputDataFromBucket(MinioClient client, string calcUuid, CancellationToken cancelToken)
@@ -140,7 +141,7 @@ namespace Arches.Actors.Domain
 
         private void RunCmd(string calcDirectoryPath)
         {
-            var cmd = new Process
+            _cmd = new Process
             {
                 EnableRaisingEvents = true,
                 StartInfo =
@@ -150,21 +151,23 @@ namespace Arches.Actors.Domain
                     RedirectStandardError = true,
                     CreateNoWindow = true,
                     UseShellExecute = false,
-                    Verb = "runas",
-                    
+                    Verb = "runas"
                 }
             };
 
-            cmd.Start();
-            cmd.OutputDataReceived += CmdOnOutputDataReceived;
-            cmd.WaitForExit();
-            Console.WriteLine(cmd.StandardError.ReadToEnd());
-            cmd.OutputDataReceived -= CmdOnOutputDataReceived;
-            cmd.Close();
+            _cmd.Start();
+            _cmd.WaitForExit();
+
+            Console.WriteLine(_cmd.StandardError.ReadToEnd());
+
+            _cmd.Close();
         }
 
         private string CopyFilesToNewDirectory(string sourceDir, string targetDir)
         {
+            if(Directory.Exists(targetDir))
+                Directory.Move(targetDir, targetDir + "Aborted");
+
             Directory.CreateDirectory(targetDir);
 
             foreach (var file in Directory.GetFiles(sourceDir))
@@ -173,11 +176,7 @@ namespace Arches.Actors.Domain
             return targetDir;
         }
 
-        private void CmdOnOutputDataReceived(object sender, DataReceivedEventArgs args)
-            => _logger.LogInformation(args.Data);
-
         private static string GetString(Stream stream)
             => new StreamReader(stream).ReadToEnd();
-
     }
 }

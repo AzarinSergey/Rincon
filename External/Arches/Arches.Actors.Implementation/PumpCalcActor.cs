@@ -1,15 +1,13 @@
-﻿using System;
-using System.ComponentModel;
+﻿using Akka.Actor;
+using Arches.Actors.Domain;
+using Arches.Contract.PumpService;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Akka.Actor;
-using Arches.Actors.Domain;
-using Arches.Contract;
-using Arches.Contract.PumpService;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Arches.Actors.Implementation
 {
@@ -28,7 +26,9 @@ namespace Arches.Actors.Implementation
             _logger = logger;
             _cancel = new CancellationTokenSource();
 
-            ReceiveAsync<PumpCalcCommand>(command => Handler(command, new PumpCalcCommandHandler(logger)));
+            var h = new PumpCalcCommandHandler(logger);
+
+            ReceiveAsync<PumpCalcCommand>(command => Handler(command, h));
         }
 
         private async Task Handler(PumpCalcCommand command, ICalcCommandHandlerWithCallback<PumpCalcCommand> handler)
