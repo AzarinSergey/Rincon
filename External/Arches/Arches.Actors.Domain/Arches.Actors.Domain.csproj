@@ -8,7 +8,7 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="minio" Version="3.0.8" />
-    <PackageReference Include="Nustache" Version="1.16.0.8" />
+    <PackageReference Include="Stubble.Compilation" Version="1.2.7" />
   </ItemGroup>
 
   <ItemGroup>

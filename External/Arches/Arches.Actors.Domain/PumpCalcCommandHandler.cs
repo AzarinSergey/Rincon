@@ -13,7 +13,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Arches.Contract.PumpService;
 using Microsoft.AspNetCore.WebUtilities;
-using Nustache.Core;
+using Stubble.Core;
+using Stubble.Core.Builders;
+using Stubble.Core.Settings;
+
 // ReSharper disable InconsistentNaming
 
 namespace Arches.Actors.Domain
@@ -76,7 +79,8 @@ namespace Arches.Actors.Domain
             var VxFilePath = Path.Combine(_calcDirectoryPath, PumpConsts.VxFilePrefix) + PumpConsts.DataFileExtension;
             var EcnFilePath = Path.Combine(_calcDirectoryPath, PumpConsts.EcnFilePrefix) + PumpConsts.DataFileExtension;
 
-            var inputPy = Render.StringToString(
+            var filledInputPy = FillInputPy(
+                    new StubbleBuilder().Build(),
                     File.ReadAllText(Path.Combine(copyFrom, InputPyTemplateFileName), Encoding.UTF8),
                     new Dictionary<string, string>
                     {
@@ -85,13 +89,12 @@ namespace Arches.Actors.Domain
                         { nameof(command.WallTemperature), command.WallTemperature.ToString(CultureInfo.InvariantCulture)},
                         { nameof(VxFilePath), VxFilePath},
                         { nameof(EcnFilePath), EcnFilePath}
-                    },
-                    new RenderContextBehaviour()
+                    }
                 );
 
             using (var inputPyStream = File.Create(inputPyFilePath))
             {
-                await inputPyStream.WriteAsync(Encoding.UTF8.GetBytes(inputPy), cancelToken);
+                await inputPyStream.WriteAsync(Encoding.UTF8.GetBytes(filledInputPy), cancelToken);
             }
 
             using (var ecnFs = File.Create(EcnFilePath))
@@ -115,6 +118,16 @@ namespace Arches.Actors.Domain
             }
 
             Directory.Delete(_calcDirectoryPath, true);
+        }
+
+        public string FillInputPy(StubbleVisitorRenderer renderer, string v, Dictionary<string, string> dictionary)
+        {
+            return renderer.Render(v, dictionary, new RenderSettings
+            {
+                SkipHtmlEncoding = true,
+                SkipRecursiveLookup = false,
+                ThrowOnDataMiss = true
+            });
         }
 
         private async Task<(string, string)> GetInputDataFromBucket(MinioClient client, string calcUuid, CancellationToken cancelToken)
@@ -165,8 +178,14 @@ namespace Arches.Actors.Domain
 
         private string CopyFilesToNewDirectory(string sourceDir, string targetDir)
         {
-            if(Directory.Exists(targetDir))
-                Directory.Move(targetDir, targetDir + "Aborted");
+            if (Directory.Exists(targetDir))
+            {
+                var i = 0;
+                while (Directory.Exists(targetDir + "Aborted" + i))
+                    i++;
+
+                Directory.Move(targetDir, targetDir + "Aborted" + i);
+            }
 
             Directory.CreateDirectory(targetDir);
 
