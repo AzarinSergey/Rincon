@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Constants.cs\Cmn.Constants.csproj" />
+    <ProjectReference Include="..\..\..\Common\Cmn.Constants\Cmn.Constants.csproj" />
     <ProjectReference Include="..\Arches.Contract\Arches.Contract.csproj" />
   </ItemGroup>
 
