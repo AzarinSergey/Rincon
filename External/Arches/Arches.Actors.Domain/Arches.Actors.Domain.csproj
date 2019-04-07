@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Constants.cs\Cmn.Constants.csproj" />
     <ProjectReference Include="..\Arches.Contract\Arches.Contract.csproj" />
   </ItemGroup>
 
