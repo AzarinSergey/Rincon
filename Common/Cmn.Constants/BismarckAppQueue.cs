@@ -6,5 +6,6 @@
         public const string BusSubscriptions = "Bus.Subscription";
 
         public const string PumpQueue = "Bus.PumpQueue";
+        public const string CltQueue = "Bus.CltQueue";
     }
 }

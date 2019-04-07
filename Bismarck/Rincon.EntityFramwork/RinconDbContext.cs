@@ -2,12 +2,7 @@
 
 namespace Rincon.EntityFramwork
 {
-
-    public class RinconDbContext : DbContext
+    public class RinconDbContext : DbContext, IRinconDbContext
     {
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-
-        }
     }
 }

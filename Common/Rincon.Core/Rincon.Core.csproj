@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bismarck\Rincon.EntityFramwork\Rincon.EntityFramwork.csproj" />
     <ProjectReference Include="..\Rincon.Core.Messaging\Rincon.Core.Messaging.csproj" />
   </ItemGroup>
 

@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Api\Api.Client\Api.Client.csproj" />
+    <ProjectReference Include="..\Clt\Clt.Implementation\Clt.Implementation.csproj" />
     <ProjectReference Include="..\Pump\Pump.Implementation\Pump.Implementation.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

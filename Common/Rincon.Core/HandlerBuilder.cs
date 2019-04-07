@@ -1,23 +1,33 @@
-using System.Threading;
 using Rincon.Core.Domain;
+using Rincon.Repository;
+using System;
+using System.Data;
+using System.Threading;
 
 namespace Rincon.Core
 {
     public class HandlerBuilder
     {
-        public HandlerBuilder()
+        private readonly Func<IsolationLevel?, IUnitOfWork> _getDbContext;
+
+        public HandlerBuilder(Func<IsolationLevel?, IUnitOfWork> getDbContext)
         {
+            _getDbContext = getDbContext;
         }
 
-        public T Build<T>(CancellationToken token)
+        public T Build<T>(CancellationToken token, IsolationLevel? isolationLevel = null)
             where T : CommandHandler, new()
         {
-            var result = new T
+            using (var uow = _getDbContext(isolationLevel))
             {
-                Token = token
-            };
+                var result = new T
+                {
+                    Token = token,
+                    Uow = uow
+                };
 
-            return result;
+                return result;
+            }
         }
     }
 }

@@ -1,14 +1,11 @@
 ﻿using Cmn.Constants;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
 using Pump.Model.Entity;
-using System;
 using Rincon.EntityFramwork;
 
 namespace Pump.Model
 {
-    public interface IPumpDbContext : IDisposable, IInfrastructure<IServiceProvider>, IDbContextDependencies, IDbSetCache, IDbQueryCache, IDbContextPoolable
+    public interface IPumpDbContext : IRinconDbContext
     {
         DbSet<PumpCalculation> PumpCalculation { get; set; }
         DbSet<CalculationRequestInfo> CalculationRequestInfo { get; set; }

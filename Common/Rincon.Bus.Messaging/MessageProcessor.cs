@@ -1,38 +1,45 @@
-using System;
-using System.Threading.Tasks;
 using Rebus.Activation;
 using Rincon.Core;
 using Rincon.Core.Domain;
 using Rincon.Core.Messaging;
+using Rincon.Repository;
+using System;
+using System.Data;
+using System.Threading.Tasks;
 
 namespace Rincon.Bus.Messaging
 {
     public class MessageProcessor : IMessageProcessor
     {
+        private readonly Func<IsolationLevel?, IUnitOfWork> _getUow;
         private readonly BuiltinHandlerActivator _activator;
 
-        //тут нужен зареганый DI логер и контекст бд
-        public MessageProcessor(
-                BuiltinHandlerActivator activator
-            )
+        public MessageProcessor(Func<IsolationLevel?, IUnitOfWork> getUow, BuiltinHandlerActivator activator)
         {
+            _getUow = getUow;
             _activator = activator;
         }
 
-        public void Dispose() => _activator?.Dispose();
+        public void Dispose()
+        {
+            _activator?.Dispose();
+        }
 
         public Task Register<TCommand>(Func<HandlerBuilder, CommandHandler<TCommand>> func) 
             where TCommand : IntegrationMessage
         {
-            _activator.Handle<TCommand>(c =>
+            _activator.Handle<TCommand>(async c =>
             {
-                var builder = new HandlerBuilder();
-
+                var builder = new HandlerBuilder(_getUow);
                 var handler = func(builder);
-
-                handler.Process(c);
-
-                return Task.CompletedTask;
+                try
+                {
+                    await handler.Process(c);
+                }
+                catch (Exception e)
+                {
+                    handler.Uow.Rollback();
+                }
             });
 
             return Task.CompletedTask;
