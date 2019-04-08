@@ -21,9 +21,9 @@ namespace Api.Client
                 // an instance of the class is created in this host process.
 
                 ServiceRuntime.RegisterServiceAsync("Api.ClientType",
-                    context => new Client(context)).GetAwaiter().GetResult();
+                    context => new ApiClient(context)).GetAwaiter().GetResult();
 
-                ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(Client).Name);
+                ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(ApiClient).Name);
 
                 // Prevents this host process from terminating so services keeps running. 
                 Thread.Sleep(Timeout.Infinite);

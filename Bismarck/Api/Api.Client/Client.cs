@@ -17,9 +17,9 @@ namespace Api.Client
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance. 
     /// </summary>
-    internal sealed class Client : StatelessService
+    internal sealed class ApiClient : StatelessService
     {
-        public Client(StatelessServiceContext context)
+        public ApiClient(StatelessServiceContext context)
             : base(context)
         { }
 
