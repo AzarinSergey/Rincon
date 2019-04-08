@@ -1,5 +1,7 @@
-﻿1. Установить asp net core 2.2, docker, 
-В VS2017 установщике доустановить поддержку ServiceFabric
+﻿1. 
+ - Установить asp net core 2.2, docker, В VS2017 установщике доустановить поддержку ServiceFabric.
+ - Изменить строку подключения к SQL серверу в константе Cmn.Constants.BismarckConsts.SqlServerConnection. На указанном сервере должна
+ быть создана БД с именем как в строке подключения. У указанного в строке юзера должен быть доступ к этой базе. При первом запуске в БД будут созданы пустые таблицы очереди, контекста Pump и Clt.
 
 2. загрузить образ с хранилищем
 docker pull minio/minio
@@ -26,10 +28,3 @@ docker run -p 24001:9000 --name minioServer -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EX
 6. Если процесс консольного приложения рассчетов повиснет (это возникает когда консолине не удается выполнить код файлов .py)
  - убить процесс PyHyCarSim.exe диспетчером (это завершит работу актора)
  - очистить директорию по названию CalculationUuid от временных файлов Rincon/External/Arches/Arches.Api/ServiceStaticFiles/PumpService/{CalculationUuid}.
-
-
-
-
-PS C:\Users\Sazarin> docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=123456zZ" -p 2402:1433 --name mssqlserver -v sqlvolume:/var/opt/mssql -d mcr.microsoft.com/mssql/server:2019-CTP2.2-ubunt
-5ab49e841a0387de35e2a150332148c3c7a309fccd092b1d2b432aaee0eb492a
-PS C:\Users\Sazarin> docker container start mssqlserver -a
