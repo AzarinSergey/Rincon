@@ -28,10 +28,3 @@ docker run -p 24001:9000 --name minioServer -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EX
 6. Если процесс консольного приложения рассчетов повиснет (это возникает когда консолине не удается выполнить код файлов .py)
  - убить процесс PyHyCarSim.exe диспетчером (это завершит работу актора)
  - очистить директорию по названию CalculationUuid от временных файлов Rincon/External/Arches/Arches.Api/ServiceStaticFiles/PumpService/{CalculationUuid}.
-
-
-
-
-PS C:\Users\Sazarin> docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=123456zZ" -p 2402:1433 --name mssqlserver -v sqlvolume:/var/opt/mssql -d mcr.microsoft.com/mssql/server:2019-CTP2.2-ubunt
-5ab49e841a0387de35e2a150332148c3c7a309fccd092b1d2b432aaee0eb492a
-PS C:\Users\Sazarin> docker container start mssqlserver -a
