@@ -22,7 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Cmn.Constants\Cmn.Constants.csproj" />
     <ProjectReference Include="..\..\..\Common\Cmn.Enums\Cmn.Enums.csproj" />
-    <ProjectReference Include="..\..\Rincon.EntityFramwork\Rincon.EntityFramwork.csproj" />
+    <ProjectReference Include="..\..\..\Common\Rincon.EntityFramwork\Rincon.EntityFramwork.csproj" />
   </ItemGroup>
 
 </Project>

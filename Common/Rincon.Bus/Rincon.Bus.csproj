@@ -22,6 +22,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Rincon.Bus.Messaging\Rincon.Bus.Messaging.csproj" />
     <ProjectReference Include="..\Rincon.Core\Rincon.Core.csproj" />
+    <ProjectReference Include="..\Rincon.EntityFramwork\Rincon.EntityFramwork.csproj" />
+    <ProjectReference Include="..\Rincon.Repository\Rincon.Repository.csproj" />
   </ItemGroup>
 
 </Project>

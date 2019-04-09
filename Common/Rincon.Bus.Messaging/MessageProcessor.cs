@@ -36,7 +36,7 @@ namespace Rincon.Bus.Messaging
                 {
                     await handler.Process(c);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     handler.Uow.Rollback();
                 }
